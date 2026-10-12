@@ -24,6 +24,12 @@ export async function pairDesktop(code: string) {
   localStorage.setItem(KEY, d.token);
   return d;
 }
+/** Connects to the local companion without any code. */
+export async function autoPairDesktop() {
+  const d = await call<{ token: string; host: string }>("/auto-pair", { token: desktopToken() ?? "" });
+  localStorage.setItem(KEY, d.token);
+  return d;
+}
 export const desktopStatus = () => call<{ ok: boolean; host: string; paused: boolean; allowedFolders: string[] }>("/status");
 export const setDesktopPermissions = (p: { allowedFolders?: string[]; paused?: boolean }) => call("/permissions", p);
 export const desktopLog = () => call<{ log: string }>("/log");

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { desktopLog, desktopStatus, desktopToken, pairDesktop, setDesktopPermissions, unpairDesktop } from "@/lib/auraDesktop";
+import { autoPairDesktop, desktopLog, desktopStatus, desktopToken, setDesktopPermissions, unpairDesktop } from "@/lib/auraDesktop";
 
 export const Route = createFileRoute("/desktop")({
   head: () => ({
@@ -17,21 +17,29 @@ export const Route = createFileRoute("/desktop")({
 });
 
 function DesktopPage() {
-  const [code, setCode] = useState("");
   const [st, setSt] = useState<{ host: string; paused: boolean; allowedFolders: string[] } | null>(null);
   const [folders, setFolders] = useState("");
   const [log, setLog] = useState("");
   const [msg, setMsg] = useState("");
 
   const refresh = async () => {
-    if (!desktopToken()) return setSt(null);
     try {
+      await autoPairDesktop();
       const s = await desktopStatus();
       setSt(s); setFolders(s.allowedFolders.join("\n"));
       setLog((await desktopLog()).log);
-    } catch { setSt(null); setMsg("Companion కనిపించలేదు. Laptop లో Start-AURA.bat run చేయండి."); }
+      setMsg("");
+    } catch (e) {
+      setSt(null);
+      const m = (e as Error).message;
+      setMsg(m === "Failed to fetch" || /fetch/i.test(m) ? "Laptop లో AURA ఇంకా run అవ్వట్లేదు. క్రింద Download నొక్కి file open చేయండి." : m);
+    }
   };
-  useEffect(() => { refresh(); }, []);
+  useEffect(() => {
+    refresh();
+    const t = setInterval(() => { if (!desktopToken()) refresh(); }, 3000);
+    return () => clearInterval(t);
+  }, []);
 
   const btn = "rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium disabled:opacity-50";
   return (
@@ -40,24 +48,11 @@ function DesktopPage() {
       <h1 className="text-2xl font-semibold">AURA Desktop Companion</h1>
       <p className="text-muted-foreground">Windows laptop లో AURA browser, files, apps పై పనులు చేస్తుంది. Password, OTP, PIN, card details ఎప్పుడూ touch చేయదు; payment, send, delete, submit ముందు మీ approval అడుగుతుంది.</p>
 
-      <section className="space-y-2 rounded-xl border border-border p-4">
-        <h2 className="font-semibold">1. Install (one time)</h2>
-        <ol className="list-decimal pl-5 space-y-1 text-muted-foreground">
-          <li><a className="underline" href="https://nodejs.org" target="_blank" rel="noreferrer">Node.js</a> install చేయండి.</li>
-          <li>ఈ రెండు files ఒకే folder లో download చేయండి: <a className="underline" href="/companion/Start-AURA.bat" download>Start-AURA.bat</a>, <a className="underline" href="/companion/aura-companion.mjs" download>aura-companion.mjs</a></li>
-          <li>Start-AURA.bat double-click చేయండి. Window లో 6-digit pairing code కనిపిస్తుంది.</li>
-        </ol>
-      </section>
-
       {!st ? (
-        <section className="space-y-2 rounded-xl border border-border p-4">
-          <h2 className="font-semibold">2. Pair</h2>
-          <div className="flex gap-2">
-            <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Pairing code" className="flex-1 rounded-lg border border-input bg-background px-3 py-2" />
-            <button className={btn} disabled={code.length < 6} onClick={async () => {
-              try { const d = await pairDesktop(code); setMsg(`Paired with ${d.host} ✅`); refresh(); } catch (e) { setMsg((e as Error).message === "Failed to fetch" ? "Companion run అవుతుందో లేదో చూడండి." : (e as Error).message); }
-            }}>Pair</button>
-          </div>
+        <section className="space-y-3 rounded-xl border border-border p-4">
+          <h2 className="font-semibold">Install (one click)</h2>
+          <a className={btn + " inline-block"} href="/companion/Start-AURA.bat" download>Download AURA for Windows</a>
+          <p className="text-muted-foreground">Download అయిన file open చేయండి. కావాల్సినవి లేకపోతే Windows permission అడిగి ఆటోమేటిక్‌గా install చేస్తుంది. తర్వాత ఈ page ఆటోమేటిక్‌గా connect అవుతుంది — code అవసరం లేదు.</p>
         </section>
       ) : (
         <section className="space-y-3 rounded-xl border border-border p-4">
