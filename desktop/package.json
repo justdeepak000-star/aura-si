@@ -20,7 +20,7 @@
     "asarUnpack": ["aura-companion.mjs"],
     "icon": "icon.png",
     "win": { "target": "nsis", "artifactName": "Aura-Setup.exe" },
-    "nsis": { "oneClick": true, "perMachine": false, "runAfterFinish": true, "createDesktopShortcut": true, "shortcutName": "AURA" },
+    "nsis": { "oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true, "createStartMenuShortcut": true, "runAfterFinish": true, "createDesktopShortcut": true, "shortcutName": "AURA" },
     "mac": { "target": "dmg", "artifactName": "Aura.dmg", "category": "public.app-category.productivity" },
     "linux": { "target": "AppImage", "artifactName": "Aura.AppImage", "category": "Utility" }
   }
