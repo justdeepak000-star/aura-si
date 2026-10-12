@@ -22,6 +22,13 @@
       "when": 1791701807512,
       "tag": "0002_remove_scheduled_email",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791813638417,
+      "tag": "0003_import_aura_schema",
+      "breakpoints": true
     }
   ]
 }
