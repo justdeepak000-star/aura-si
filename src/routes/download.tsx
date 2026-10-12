@@ -95,7 +95,7 @@ function DownloadPage() {
             </div>
           ))}
         </div>
-        <p className="text-center text-xs text-muted-foreground mt-6">Download, double-click, done — AURA installs everything and opens the login screen automatically.</p>
+        <p className="text-center text-xs text-muted-foreground mt-6">Download, open, click Install — everything AURA needs is built in. No Node.js, no pairing code: AURA connects to your laptop automatically.</p>
       </section>
 
       {[{ title: "Everything a chatbot does", items: chat }, { title: "Plus real tasks on your laptop", items: tasks }].map((s) => (

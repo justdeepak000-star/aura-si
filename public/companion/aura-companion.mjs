@@ -12,7 +12,7 @@ const PORT = 47821;
 const HOME = path.join(os.homedir(), ".aura-companion");
 const CFG = path.join(HOME, "config.json");
 const LOG = path.join(HOME, "activity.log");
-const ORIGINS = [/^https:\/\/aura-artifical\.lovable\.app$/, /^https:\/\/[a-z0-9-]+\.lovable\.app$/, /^http:\/\/localhost(:\d+)?$/];
+const ORIGINS = [/^https:\/\/aura-si\.lovable\.app$/, /^https:\/\/[a-z0-9-]+\.lovable\.app$/, /^http:\/\/localhost(:\d+)?$/];
 if (!existsSync(HOME)) mkdirSync(HOME, { recursive: true });
 
 let cfg = { token: "", pairCode: "", allowedFolders: [path.join(os.homedir(), "Downloads"), path.join(os.homedir(), "Documents"), path.join(os.homedir(), "Desktop")], allowedApps: [], paused: false };
