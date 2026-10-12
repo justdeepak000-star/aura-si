@@ -17,7 +17,6 @@ export const Route = createFileRoute("/desktop")({
 });
 
 function DesktopPage() {
-  const [code, setCode] = useState("");
   const [st, setSt] = useState<{ host: string; paused: boolean; allowedFolders: string[] } | null>(null);
   const [folders, setFolders] = useState("");
   const [log, setLog] = useState("");
