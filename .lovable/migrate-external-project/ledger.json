@@ -1,0 +1,11 @@
+[
+  {"capability":"code","source":"zip archive (TanStack Start)","outcome":"migrate","status":"done","next_action":null},
+  {"capability":"schema","source":"supabase/migrations","outcome":"migrate","status":"done","next_action":null},
+  {"capability":"records","source":"previous Cloud database","outcome":"migrate","status":"pending","next_action":"User to export table CSVs from old project"},
+  {"capability":"auth identities","source":"previous Cloud auth","outcome":"migrate","status":"pending","next_action":"User to export users (email + id)"},
+  {"capability":"authorization (admin role)","source":"hardcoded admin user id","outcome":"migrate","status":"pending","next_action":"Assign admin role once owner account exists here"},
+  {"capability":"file storage","source":"avatars, user-files buckets","outcome":"migrate","status":"buckets created; file bytes pending","next_action":"Re-upload files if needed"},
+  {"capability":"AI (Lovable AI)","source":"LOVABLE_API_KEY","outcome":"preserve","status":"done","next_action":null},
+  {"capability":"password reset email (EmailJS)","source":"src/routes/api/auth-otp.ts","outcome":"preserve","status":"done","next_action":null},
+  {"capability":"android/desktop builds","source":"GitHub Actions, CAP_SERVER_URL","outcome":"preserve","status":"pending","next_action":"Point CAP_SERVER_URL at new published URL"}
+]
