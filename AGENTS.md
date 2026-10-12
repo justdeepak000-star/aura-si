@@ -8,3 +8,4 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+- Android APK is built by GitHub Actions (.github/workflows/build-apk.yml) and loads the published site via CAP_SERVER_URL — the SSR build has no static index.html to bundle.

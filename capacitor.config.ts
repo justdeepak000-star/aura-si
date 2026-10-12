@@ -1,0 +1,26 @@
+import type { CapacitorConfig } from "@capacitor/cli";
+
+const config: CapacitorConfig = {
+  appId: "com.jarvis.voiceassistant",
+  appName: "AURA",
+  webDir: "dist",
+  server: {
+    androidScheme: "https",
+    cleartext: false,
+    ...(process.env.CAP_SERVER_URL ? { url: process.env.CAP_SERVER_URL } : {}),
+  },
+  android: {
+    allowMixedContent: false,
+  },
+  plugins: {
+    LocalNotifications: {
+      smallIcon: "ic_stat_icon",
+      iconColor: "#00E5FF",
+    },
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert"],
+    },
+  },
+};
+
+export default config;

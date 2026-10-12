@@ -10,33 +10,232 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DesktopRouteImport } from './routes/desktop'
+import { Route as DownloadRouteImport } from './routes/download'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ApiAgentFormRouteImport } from './routes/api/agent-form'
+import { Route as ApiAgentOperatorRouteImport } from './routes/api/agent-operator'
+import { Route as ApiAgentPlanRouteImport } from './routes/api/agent-plan'
+import { Route as ApiAiHealthRouteImport } from './routes/api/ai-health'
+import { Route as ApiAuthOtpRouteImport } from './routes/api/auth-otp'
+import { Route as ApiChatTitleRouteImport } from './routes/api/chat-title'
+import { Route as ApiDesktopAgentRouteImport } from './routes/api/desktop-agent'
+import { Route as ApiGenerateImageRouteImport } from './routes/api/generate-image'
+import { Route as ApiJarvisChatRouteImport } from './routes/api/jarvis-chat'
+import { Route as ApiSttRouteImport } from './routes/api/stt'
+import { Route as ApiTtsRouteImport } from './routes/api/tts'
+import { Route as ApiYtFirstRouteImport } from './routes/api/yt-first'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DesktopRoute = DesktopRouteImport.update({
+  id: '/desktop',
+  path: '/desktop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadRoute = DownloadRouteImport.update({
+  id: '/download',
+  path: '/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAgentFormRoute = ApiAgentFormRouteImport.update({
+  id: '/api/agent-form',
+  path: '/api/agent-form',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAgentOperatorRoute = ApiAgentOperatorRouteImport.update({
+  id: '/api/agent-operator',
+  path: '/api/agent-operator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAgentPlanRoute = ApiAgentPlanRouteImport.update({
+  id: '/api/agent-plan',
+  path: '/api/agent-plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAiHealthRoute = ApiAiHealthRouteImport.update({
+  id: '/api/ai-health',
+  path: '/api/ai-health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthOtpRoute = ApiAuthOtpRouteImport.update({
+  id: '/api/auth-otp',
+  path: '/api/auth-otp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatTitleRoute = ApiChatTitleRouteImport.update({
+  id: '/api/chat-title',
+  path: '/api/chat-title',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDesktopAgentRoute = ApiDesktopAgentRouteImport.update({
+  id: '/api/desktop-agent',
+  path: '/api/desktop-agent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGenerateImageRoute = ApiGenerateImageRouteImport.update({
+  id: '/api/generate-image',
+  path: '/api/generate-image',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiJarvisChatRoute = ApiJarvisChatRouteImport.update({
+  id: '/api/jarvis-chat',
+  path: '/api/jarvis-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSttRoute = ApiSttRouteImport.update({
+  id: '/api/stt',
+  path: '/api/stt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTtsRoute = ApiTtsRouteImport.update({
+  id: '/api/tts',
+  path: '/api/tts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiYtFirstRoute = ApiYtFirstRouteImport.update({
+  id: '/api/yt-first',
+  path: '/api/yt-first',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/desktop': typeof DesktopRoute
+  '/download': typeof DownloadRoute
+  '/privacy': typeof PrivacyRoute
+  '/api/agent-form': typeof ApiAgentFormRoute
+  '/api/agent-operator': typeof ApiAgentOperatorRoute
+  '/api/agent-plan': typeof ApiAgentPlanRoute
+  '/api/ai-health': typeof ApiAiHealthRoute
+  '/api/auth-otp': typeof ApiAuthOtpRoute
+  '/api/chat-title': typeof ApiChatTitleRoute
+  '/api/desktop-agent': typeof ApiDesktopAgentRoute
+  '/api/generate-image': typeof ApiGenerateImageRoute
+  '/api/jarvis-chat': typeof ApiJarvisChatRoute
+  '/api/stt': typeof ApiSttRoute
+  '/api/tts': typeof ApiTtsRoute
+  '/api/yt-first': typeof ApiYtFirstRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/desktop': typeof DesktopRoute
+  '/download': typeof DownloadRoute
+  '/privacy': typeof PrivacyRoute
+  '/api/agent-form': typeof ApiAgentFormRoute
+  '/api/agent-operator': typeof ApiAgentOperatorRoute
+  '/api/agent-plan': typeof ApiAgentPlanRoute
+  '/api/ai-health': typeof ApiAiHealthRoute
+  '/api/auth-otp': typeof ApiAuthOtpRoute
+  '/api/chat-title': typeof ApiChatTitleRoute
+  '/api/desktop-agent': typeof ApiDesktopAgentRoute
+  '/api/generate-image': typeof ApiGenerateImageRoute
+  '/api/jarvis-chat': typeof ApiJarvisChatRoute
+  '/api/stt': typeof ApiSttRoute
+  '/api/tts': typeof ApiTtsRoute
+  '/api/yt-first': typeof ApiYtFirstRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/desktop': typeof DesktopRoute
+  '/download': typeof DownloadRoute
+  '/privacy': typeof PrivacyRoute
+  '/api/agent-form': typeof ApiAgentFormRoute
+  '/api/agent-operator': typeof ApiAgentOperatorRoute
+  '/api/agent-plan': typeof ApiAgentPlanRoute
+  '/api/ai-health': typeof ApiAiHealthRoute
+  '/api/auth-otp': typeof ApiAuthOtpRoute
+  '/api/chat-title': typeof ApiChatTitleRoute
+  '/api/desktop-agent': typeof ApiDesktopAgentRoute
+  '/api/generate-image': typeof ApiGenerateImageRoute
+  '/api/jarvis-chat': typeof ApiJarvisChatRoute
+  '/api/stt': typeof ApiSttRoute
+  '/api/tts': typeof ApiTtsRoute
+  '/api/yt-first': typeof ApiYtFirstRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/desktop'
+    | '/download'
+    | '/privacy'
+    | '/api/agent-form'
+    | '/api/agent-operator'
+    | '/api/agent-plan'
+    | '/api/ai-health'
+    | '/api/auth-otp'
+    | '/api/chat-title'
+    | '/api/desktop-agent'
+    | '/api/generate-image'
+    | '/api/jarvis-chat'
+    | '/api/stt'
+    | '/api/tts'
+    | '/api/yt-first'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/desktop'
+    | '/download'
+    | '/privacy'
+    | '/api/agent-form'
+    | '/api/agent-operator'
+    | '/api/agent-plan'
+    | '/api/ai-health'
+    | '/api/auth-otp'
+    | '/api/chat-title'
+    | '/api/desktop-agent'
+    | '/api/generate-image'
+    | '/api/jarvis-chat'
+    | '/api/stt'
+    | '/api/tts'
+    | '/api/yt-first'
+  id:
+    | '__root__'
+    | '/'
+    | '/desktop'
+    | '/download'
+    | '/privacy'
+    | '/api/agent-form'
+    | '/api/agent-operator'
+    | '/api/agent-plan'
+    | '/api/ai-health'
+    | '/api/auth-otp'
+    | '/api/chat-title'
+    | '/api/desktop-agent'
+    | '/api/generate-image'
+    | '/api/jarvis-chat'
+    | '/api/stt'
+    | '/api/tts'
+    | '/api/yt-first'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DesktopRoute: typeof DesktopRoute
+  DownloadRoute: typeof DownloadRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ApiAgentFormRoute: typeof ApiAgentFormRoute
+  ApiAgentOperatorRoute: typeof ApiAgentOperatorRoute
+  ApiAgentPlanRoute: typeof ApiAgentPlanRoute
+  ApiAiHealthRoute: typeof ApiAiHealthRoute
+  ApiAuthOtpRoute: typeof ApiAuthOtpRoute
+  ApiChatTitleRoute: typeof ApiChatTitleRoute
+  ApiDesktopAgentRoute: typeof ApiDesktopAgentRoute
+  ApiGenerateImageRoute: typeof ApiGenerateImageRoute
+  ApiJarvisChatRoute: typeof ApiJarvisChatRoute
+  ApiSttRoute: typeof ApiSttRoute
+  ApiTtsRoute: typeof ApiTtsRoute
+  ApiYtFirstRoute: typeof ApiYtFirstRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +247,131 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/desktop': {
+      id: '/desktop'
+      path: '/desktop'
+      fullPath: '/desktop'
+      preLoaderRoute: typeof DesktopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/download': {
+      id: '/download'
+      path: '/download'
+      fullPath: '/download'
+      preLoaderRoute: typeof DownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/agent-form': {
+      id: '/api/agent-form'
+      path: '/api/agent-form'
+      fullPath: '/api/agent-form'
+      preLoaderRoute: typeof ApiAgentFormRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/agent-operator': {
+      id: '/api/agent-operator'
+      path: '/api/agent-operator'
+      fullPath: '/api/agent-operator'
+      preLoaderRoute: typeof ApiAgentOperatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/agent-plan': {
+      id: '/api/agent-plan'
+      path: '/api/agent-plan'
+      fullPath: '/api/agent-plan'
+      preLoaderRoute: typeof ApiAgentPlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ai-health': {
+      id: '/api/ai-health'
+      path: '/api/ai-health'
+      fullPath: '/api/ai-health'
+      preLoaderRoute: typeof ApiAiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth-otp': {
+      id: '/api/auth-otp'
+      path: '/api/auth-otp'
+      fullPath: '/api/auth-otp'
+      preLoaderRoute: typeof ApiAuthOtpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat-title': {
+      id: '/api/chat-title'
+      path: '/api/chat-title'
+      fullPath: '/api/chat-title'
+      preLoaderRoute: typeof ApiChatTitleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/desktop-agent': {
+      id: '/api/desktop-agent'
+      path: '/api/desktop-agent'
+      fullPath: '/api/desktop-agent'
+      preLoaderRoute: typeof ApiDesktopAgentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/generate-image': {
+      id: '/api/generate-image'
+      path: '/api/generate-image'
+      fullPath: '/api/generate-image'
+      preLoaderRoute: typeof ApiGenerateImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/jarvis-chat': {
+      id: '/api/jarvis-chat'
+      path: '/api/jarvis-chat'
+      fullPath: '/api/jarvis-chat'
+      preLoaderRoute: typeof ApiJarvisChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stt': {
+      id: '/api/stt'
+      path: '/api/stt'
+      fullPath: '/api/stt'
+      preLoaderRoute: typeof ApiSttRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/tts': {
+      id: '/api/tts'
+      path: '/api/tts'
+      fullPath: '/api/tts'
+      preLoaderRoute: typeof ApiTtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/yt-first': {
+      id: '/api/yt-first'
+      path: '/api/yt-first'
+      fullPath: '/api/yt-first'
+      preLoaderRoute: typeof ApiYtFirstRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DesktopRoute: DesktopRoute,
+  DownloadRoute: DownloadRoute,
+  PrivacyRoute: PrivacyRoute,
+  ApiAgentFormRoute: ApiAgentFormRoute,
+  ApiAgentOperatorRoute: ApiAgentOperatorRoute,
+  ApiAgentPlanRoute: ApiAgentPlanRoute,
+  ApiAiHealthRoute: ApiAiHealthRoute,
+  ApiAuthOtpRoute: ApiAuthOtpRoute,
+  ApiChatTitleRoute: ApiChatTitleRoute,
+  ApiDesktopAgentRoute: ApiDesktopAgentRoute,
+  ApiGenerateImageRoute: ApiGenerateImageRoute,
+  ApiJarvisChatRoute: ApiJarvisChatRoute,
+  ApiSttRoute: ApiSttRoute,
+  ApiTtsRoute: ApiTtsRoute,
+  ApiYtFirstRoute: ApiYtFirstRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
