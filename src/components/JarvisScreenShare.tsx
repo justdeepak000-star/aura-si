@@ -1,0 +1,223 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { MonitorUp, X, ScanEye, Loader2, ImageUp } from "lucide-react";
+
+/**
+ * Screen sharing — captures the user's screen/tab and lets AURA look at what
+ * is on it, the way Gemini's "share screen" works.
+ */
+export function JarvisScreenShare({
+  open,
+  onClose,
+  onFrame,
+}: {
+  open: boolean;
+  onClose: () => void;
+  /** Sends a captured frame (data URL) to AURA; resolves with the spoken reply. */
+  onFrame: (dataUrl: string) => Promise<string>;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const [sharing, setSharing] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [reply, setReply] = useState<string>("");
+  const [shot, setShot] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const stop = useCallback(() => {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    setSharing(false);
+  }, []);
+
+  const start = useCallback(async () => {
+    try {
+      const md = navigator.mediaDevices as MediaDevices & {
+        getDisplayMedia?: (c: DisplayMediaStreamOptions) => Promise<MediaStream>;
+      };
+      if (!md?.getDisplayMedia) {
+        // Mobile browsers / Android WebView have no getDisplayMedia — fall back to
+        // picking a screenshot so the feature still works everywhere.
+        fileRef.current?.click();
+        return;
+      }
+      const stream = await md.getDisplayMedia({ video: true, audio: false });
+      streamRef.current = stream;
+      setSharing(true);
+      stream.getVideoTracks()[0]?.addEventListener("ended", () => stop());
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play().catch(() => {});
+      }
+    } catch (err) {
+      const name = (err as { name?: string } | null)?.name;
+      if (name === "NotAllowedError") {
+        toast.error("Screen share was cancelled.");
+      } else {
+        fileRef.current?.click();
+      }
+    }
+  }, [stop]);
+
+  useEffect(() => {
+    if (!open) stop();
+    return () => stop();
+  }, [open, stop]);
+
+  const analyzeDataUrl = async (dataUrl: string) => {
+    setAnalyzing(true);
+    try {
+      const answer = await onFrame(dataUrl);
+      setReply(answer || "I couldn't read that screen, sir.");
+    } catch {
+      toast.error("Couldn't analyse the screen.");
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  const onPickShot = async (file: File | undefined) => {
+    if (!file) return;
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(String(fr.result));
+      fr.onerror = () => reject(new Error("read failed"));
+      fr.readAsDataURL(file);
+    }).catch(() => null);
+    if (!dataUrl) {
+      toast.error("Couldn't read that image.");
+      return;
+    }
+    setShot(dataUrl);
+    await analyzeDataUrl(dataUrl);
+  };
+
+  const analyze = async () => {
+    const video = videoRef.current;
+    if (!video || !sharing) return;
+    setAnalyzing(true);
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.min(1280, video.videoWidth || 1280);
+      canvas.height = Math.round(
+        canvas.width * ((video.videoHeight || 720) / (video.videoWidth || 1280)),
+      );
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+      const answer = await onFrame(dataUrl);
+      setReply(answer || "I couldn't read that screen, sir.");
+    } catch {
+      toast.error("Couldn't analyse the screen.");
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-xl">
+      <div className="flex items-center gap-3 border-b border-[color:var(--aura-lav)]/25 px-5 py-4">
+        <MonitorUp className="h-5 w-5 text-[color:var(--aura-lav)]" />
+        <div className="font-hud text-sm tracking-[0.2em] text-[color:var(--aura-lav)]">
+          ◢ SCREEN SHARE
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            stop();
+            onClose();
+          }}
+          aria-label="Close screen share"
+          className="ml-auto flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--aura-lav)]/40 text-[color:var(--aura-lav)] transition hover:bg-[color:var(--aura-lav)]/15"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 px-5 py-6">
+        <div className="relative w-full max-w-3xl overflow-hidden rounded-2xl border border-[color:var(--aura-lav)]/30 bg-black/60">
+          <video
+            ref={videoRef}
+            muted
+            playsInline
+            className={`aspect-video w-full object-contain ${sharing ? "" : "opacity-30"}`}
+          />
+          {!sharing && shot && (
+            <img src={shot} alt="Shared screen" className="absolute inset-0 h-full w-full object-contain" />
+          )}
+          {!sharing && !shot && (
+            <div className="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-muted-foreground">
+              Start sharing to let AURA see your screen — or send a screenshot on mobile.
+            </div>
+          )}
+        </div>
+
+        {reply && (
+          <div className="w-full max-w-3xl rounded-2xl border border-[color:var(--aura-lav)]/30 bg-card/70 px-4 py-3 text-sm text-foreground">
+            {reply}
+          </div>
+        )}
+
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            void onPickShot(e.target.files?.[0]);
+            e.target.value = "";
+          }}
+        />
+
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          {!sharing ? (
+            <>
+            <button
+              type="button"
+              onClick={() => void start()}
+              className="flex items-center gap-2 rounded-full border border-[color:var(--aura-lav)]/50 bg-[color:var(--aura-lav)]/10 px-5 py-2.5 text-sm text-[color:var(--aura-lav)] transition hover:bg-[color:var(--aura-lav)]/20"
+            >
+              <MonitorUp className="h-4 w-4" /> Start sharing
+            </button>
+            <button
+              type="button"
+              disabled={analyzing}
+              onClick={() => fileRef.current?.click()}
+              className="flex items-center gap-2 rounded-full border border-[color:var(--aura-lav)]/30 bg-background/60 px-5 py-2.5 text-sm text-muted-foreground transition hover:text-[color:var(--aura-lav)] disabled:opacity-50"
+            >
+              {analyzing ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageUp className="h-4 w-4" />}
+              Send a screenshot
+            </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                disabled={analyzing}
+                onClick={() => void analyze()}
+                className="flex items-center gap-2 rounded-full border border-[color:var(--aura-lav)]/50 bg-[color:var(--aura-lav)]/10 px-5 py-2.5 text-sm text-[color:var(--aura-lav)] transition hover:bg-[color:var(--aura-lav)]/20 disabled:opacity-50"
+              >
+                {analyzing ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <ScanEye className="h-4 w-4" />
+                )}
+                Ask AURA about this screen
+              </button>
+              <button
+                type="button"
+                onClick={stop}
+                className="rounded-full border border-[color:var(--jarvis-red)]/40 bg-[color:var(--jarvis-red)]/10 px-5 py-2.5 text-sm text-[color:var(--jarvis-red)] transition hover:bg-[color:var(--jarvis-red)]/20"
+              >
+                Stop sharing
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

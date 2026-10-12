@@ -1,0 +1,27 @@
+{
+  "name": "aura-desktop",
+  "productName": "AURA",
+  "version": "1.0.0",
+  "description": "AURA Desktop — AI assistant that chats and does tasks on your laptop",
+  "author": "Deepak",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --publish never"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "app.aura.desktop",
+    "productName": "AURA",
+    "files": ["main.cjs", "aura-companion.mjs", "icon.png"],
+    "asarUnpack": ["aura-companion.mjs"],
+    "icon": "icon.png",
+    "win": { "target": "nsis", "artifactName": "Aura-Setup.exe" },
+    "nsis": { "oneClick": true, "perMachine": false, "runAfterFinish": true, "createDesktopShortcut": true, "shortcutName": "AURA" },
+    "mac": { "target": "dmg", "artifactName": "Aura.dmg", "category": "public.app-category.productivity" },
+    "linux": { "target": "AppImage", "artifactName": "Aura.AppImage", "category": "Utility" }
+  }
+}

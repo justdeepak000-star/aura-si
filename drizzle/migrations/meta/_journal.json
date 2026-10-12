@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791697302238,
+      "tag": "0000_aura_scheduled_emails",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791700130140,
+      "tag": "0001_aura_gmail_oauth",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791701807512,
+      "tag": "0002_remove_scheduled_email",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791813638417,
+      "tag": "0003_import_aura_schema",
+      "breakpoints": true
+    }
+  ]
+}

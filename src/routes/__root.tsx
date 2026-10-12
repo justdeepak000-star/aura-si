@@ -6,9 +6,9 @@ import {
   useRouter,
   HeadContent,
   Scripts,
-  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -35,7 +35,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: ErrorComponentProps) {
+function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -78,27 +78,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "AURA — Intelligent Voice Assistant" },
+      { name: "description", content: "AURA — a private, adaptive bilingual (English & Telugu) AI voice assistant with hands-free listening." },
+      { name: "author", content: "Chinnu" },
+      { property: "og:title", content: "AURA — Intelligent Voice Assistant" },
+      { property: "og:description", content: "AURA — a private, adaptive bilingual (English & Telugu) AI voice assistant with hands-free listening." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "AURA — Intelligent Voice Assistant" },
+      { name: "twitter:description", content: "AURA — a private, adaptive bilingual (English & Telugu) AI voice assistant with hands-free listening." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b3e12b5f-71da-46de-89b2-c29565fa47e5/id-preview-c044ddd6--6971eadb-54f5-44df-947a-09303aa59b4f.lovable.app-1783824155337.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b3e12b5f-71da-46de-89b2-c29565fa47e5/id-preview-c044ddd6--6971eadb-54f5-44df-947a-09303aa59b4f.lovable.app-1783824155337.png" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Exo+2:wght@200;300;400;500;600&display=swap" },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/aura-icon.png" },
     ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
+  errorComponent: (props) => <ErrorComponent error={props.error as Error} reset={props.reset} />,
 });
 
 function RootShell({ children }: { children: ReactNode }) {
@@ -118,10 +126,23 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  // AURA Desktop app opens the site with ?auraPair=CODE — pair automatically, no manual steps.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get("auraPair");
+    if (!code) return;
+    url.searchParams.delete("auraPair");
+    window.history.replaceState(null, "", url.toString());
+    import("@/lib/auraDesktop").then(({ pairDesktop, desktopToken }) => {
+      if (!desktopToken()) pairDesktop(code).catch(() => {});
+    });
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <Toaster position="top-center" theme="dark" richColors />
     </QueryClientProvider>
   );
 }
