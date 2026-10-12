@@ -1,17 +1,28 @@
 @echo off
-title AURA Desktop Companion
-cd /d "%~dp0"
+title AURA Desktop
+cd /d "%TEMP%"
+if not exist "%LOCALAPPDATA%\AURA" mkdir "%LOCALAPPDATA%\AURA"
+cd /d "%LOCALAPPDATA%\AURA"
+echo.
+echo   AURA Desktop - setting things up...
+echo.
 where node >nul 2>nul
 if errorlevel 1 (
-  echo AURA needs Node.js. Installing it now - please click "Yes" when Windows asks for permission...
-  winget install -e --id OpenJS.NodeJS.LTS --accept-source-agreements --accept-package-agreements
+  echo   Installing Node.js - click "Yes" when Windows asks for permission...
+  winget install -e --id OpenJS.NodeJS.LTS --silent --accept-source-agreements --accept-package-agreements
   set "PATH=%PATH%;%ProgramFiles%\nodejs"
-  where node >nul 2>nul || (echo Automatic install failed. Opening nodejs.org - install it and run this file again. & start https://nodejs.org & pause & exit /b)
 )
-if not exist aura-companion.mjs (
-  echo Downloading AURA companion...
-  powershell -NoProfile -Command "Invoke-WebRequest https://aura-si.lovable.app/companion/aura-companion.mjs -OutFile aura-companion.mjs"
+where node >nul 2>nul
+if errorlevel 1 (
+  if not exist "%ProgramFiles%\nodejs\node.exe" (
+    echo   winget not available - downloading Node.js installer...
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest https://nodejs.org/dist/v20.18.0/node-v20.18.0-x64.msi -OutFile node.msi"
+    powershell -NoProfile -Command "Start-Process msiexec -Verb RunAs -Wait -ArgumentList '/i','%CD%\node.msi','/qn'"
+    set "PATH=%PATH%;%ProgramFiles%\nodejs"
+  )
 )
+echo   Downloading latest AURA companion...
+powershell -NoProfile -Command "Invoke-WebRequest https://aura-si.lovable.app/companion/aura-companion.mjs -OutFile aura-companion.mjs"
 start "" https://aura-si.lovable.app/desktop
-node aura-companion.mjs
+"%ProgramFiles%\nodejs\node.exe" aura-companion.mjs 2>nul || node aura-companion.mjs
 pause

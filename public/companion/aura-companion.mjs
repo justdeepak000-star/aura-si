@@ -13,6 +13,7 @@ const HOME = path.join(os.homedir(), ".aura-companion");
 const CFG = path.join(HOME, "config.json");
 const LOG = path.join(HOME, "activity.log");
 const ORIGINS = [/^https:\/\/aura-si\.lovable\.app$/, /^https:\/\/[a-z0-9-]+\.lovable\.app$/, /^http:\/\/localhost(:\d+)?$/];
+const AUTO_ORIGINS = [/^https:\/\/aura-si\.lovable\.app$/, /^https:\/\/id-preview--f757d944-a68f-4bba-8f80-e8007e4cb873\.lovable\.app$/, /^http:\/\/localhost(:\d+)?$/];
 if (!existsSync(HOME)) mkdirSync(HOME, { recursive: true });
 
 let cfg = { token: "", pairCode: "", allowedFolders: [path.join(os.homedir(), "Downloads"), path.join(os.homedir(), "Documents"), path.join(os.homedir(), "Desktop")], allowedApps: [], paused: false };
@@ -88,6 +89,14 @@ http.createServer(async (req, res) => {
   const send = (code, o) => { res.writeHead(code, { "Content-Type": "application/json" }); res.end(JSON.stringify(o)); };
   try {
     const body = req.method === "POST" ? await read(req) : {};
+    if (req.url === "/auto-pair") {
+      // No code needed: only the AURA website (checked by browser Origin) can pair, and only while unpaired.
+      if (!AUTO_ORIGINS.some((o) => o.test(origin))) return send(403, { error: "Origin not allowed" });
+      if (cfg.token && body.token === cfg.token) return send(200, { token: cfg.token, platform: process.platform, host: os.hostname() });
+      if (cfg.token) return send(409, { error: "Already paired with another browser. Unpair first." });
+      cfg.token = crypto.randomBytes(24).toString("hex"); cfg.pairCode = ""; save(); log(`Auto-paired with ${origin}`);
+      return send(200, { token: cfg.token, platform: process.platform, host: os.hostname() });
+    }
     if (req.url === "/pair") {
       if (!cfg.pairCode || String(body.code) !== cfg.pairCode) return send(401, { error: "Wrong pairing code" });
       cfg.token = crypto.randomBytes(24).toString("hex"); cfg.pairCode = ""; save(); log("Paired with AURA web");
@@ -104,7 +113,6 @@ http.createServer(async (req, res) => {
   } catch (e) { log(`ERROR ${e.message}`); send(500, { error: e.message }); }
 }).listen(PORT, "127.0.0.1", () => {
   console.log("\n  AURA Desktop Companion is running on this laptop.");
-  if (cfg.pairCode) console.log(`\n  PAIRING CODE:  ${cfg.pairCode}\n  Enter it on the AURA website → Desktop page.\n`);
-  else console.log("  Already paired. Keep this window open. Close it to stop AURA instantly.\n");
+  console.log(cfg.token ? "  Connected. Keep this window open. Close it to stop AURA instantly.\n" : "  Connecting automatically to the AURA website...\n");
   console.log(`  Activity log: ${LOG}\n`);
 });
