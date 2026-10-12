@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { desktopLog, desktopStatus, desktopToken, pairDesktop, setDesktopPermissions, unpairDesktop } from "@/lib/auraDesktop";
+import { autoPairDesktop, desktopLog, desktopStatus, desktopToken, setDesktopPermissions, unpairDesktop } from "@/lib/auraDesktop";
 
 export const Route = createFileRoute("/desktop")({
   head: () => ({
