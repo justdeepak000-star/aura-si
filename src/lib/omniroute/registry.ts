@@ -2220,6 +2220,18 @@ export const OMNIROUTE_REGISTRY: OmniRegistryEntry[] = [
     "defaultContextLength": 1048576,
     "models": [
       {
+        "id": "gemini-flash-latest",
+        "name": "Gemini Flash (Latest)",
+        "supportsVision": true,
+        "toolCalling": true
+      },
+      {
+        "id": "gemini-flash-lite-latest",
+        "name": "Gemini Flash Lite (Latest)",
+        "supportsVision": true,
+        "toolCalling": true
+      },
+      {
         "id": "gemini-3.1-pro-preview",
         "name": "Gemini 3.1 Pro Preview",
         "supportsVision": true,

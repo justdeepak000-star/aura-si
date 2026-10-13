@@ -98,9 +98,9 @@ const UTILITY_HINT = /(lite|mini|flash|small|instant|8b|7b|nano|turbo|haiku)/i;
  */
 const PREFERRED_MODELS: Record<string, { text?: string; vision?: string; utility?: string }> = {
   gemini: {
-    text: "gemini-2.5-flash",
-    vision: "gemini-2.5-flash",
-    utility: "gemini-2.5-flash-lite",
+    text: "gemini-flash-latest",
+    vision: "gemini-flash-latest",
+    utility: "gemini-flash-lite-latest",
   },
   openrouter: {
     text: "google/gemini-2.5-flash-lite",
