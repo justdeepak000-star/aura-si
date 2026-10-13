@@ -27,7 +27,7 @@ jobs:
         shell: bash
         run: |
           cp ../public/companion/aura-companion.mjs .
-          cp ../public/aura-mark.png icon.png
+          cp ../public/aura-icon.png icon.png
       - run: npm install --no-audit --no-fund
       - run: npm run dist
         env:
