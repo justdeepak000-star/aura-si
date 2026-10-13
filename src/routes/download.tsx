@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Monitor, Apple, Terminal, Download, Mic, Search, Code2, FileText, MousePointerClick, FolderOpen, Globe, ShieldCheck } from "lucide-react";
 
+import { TiltCard } from "@/components/TiltCard";
+
 const DownloadScene = lazy(() => import("@/components/DownloadScene"));
 
 export const Route = createFileRoute("/download")({
@@ -85,14 +87,14 @@ function DownloadPage() {
         <h2 className="text-3xl font-semibold text-center mb-10">Available everywhere</h2>
         <div className="grid md:grid-cols-3 gap-5">
           {platforms.map((p) => (
-            <div key={p.id} className={`rounded-2xl border p-6 bg-card transition ${p.id === os ? "border-primary" : "border-border"}`}>
+            <TiltCard key={p.id} className={`rounded-2xl border p-6 bg-card ${p.id === os ? "border-primary" : "border-border"}`}>
               <p.icon className="h-8 w-8 mb-4" />
               <h3 className="text-xl font-semibold">{p.name}</h3>
               <p className="text-sm text-muted-foreground mt-1 mb-5">{p.note}</p>
-              <a href={p.href} download className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2 text-sm hover:bg-accent">
+              <a href={p.href} download className="relative inline-flex items-center gap-2 rounded-full border border-border px-5 py-2 text-sm hover:bg-accent">
                 <Download className="h-4 w-4" /> {p.file}
               </a>
-            </div>
+            </TiltCard>
           ))}
         </div>
         <p className="text-center text-xs text-muted-foreground mt-6">Download, open, click Install — everything AURA needs is built in. No Node.js, no pairing code: AURA connects to your laptop automatically.</p>
@@ -103,11 +105,11 @@ function DownloadPage() {
           <h2 className="text-3xl font-semibold mb-8">{s.title}</h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
             {s.items.map((f) => (
-              <div key={f.t} className="rounded-2xl border border-border bg-card p-5 hover:-translate-y-1 transition">
+              <TiltCard key={f.t} className="rounded-2xl border border-border bg-card p-5">
                 <f.icon className="h-6 w-6 mb-3 text-primary" />
                 <h3 className="font-semibold">{f.t}</h3>
                 <p className="text-sm text-muted-foreground mt-1">{f.d}</p>
-              </div>
+              </TiltCard>
             ))}
           </div>
         </section>
