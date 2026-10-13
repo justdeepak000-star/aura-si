@@ -51,7 +51,7 @@ function DesktopPage() {
       {!st ? (
         <section className="space-y-3 rounded-xl border border-border p-4">
           <h2 className="font-semibold">Install (one click)</h2>
-          <a className={btn + " inline-block"} href="/companion/Start-AURA.bat" download>Download AURA for Windows</a>
+          <a className={btn + " inline-block"} href="https://github.com/justdeepak000-star/aura-artifical/releases/download/desktop-latest/Aura-Setup.exe">Download AURA for Windows</a>
           <p className="text-muted-foreground">Download అయిన file open చేయండి. కావాల్సినవి లేకపోతే Windows permission అడిగి ఆటోమేటిక్‌గా install చేస్తుంది. తర్వాత ఈ page ఆటోమేటిక్‌గా connect అవుతుంది — code అవసరం లేదు.</p>
         </section>
       ) : (
