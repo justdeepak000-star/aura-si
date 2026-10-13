@@ -21,7 +21,7 @@ export const Route = createFileRoute("/download")({
 type OS = "windows" | "mac" | "linux";
 
 // Set to "owner/repo" of your GitHub repository; installers come from its "desktop-latest" release.
-const GITHUB_REPO = "justdeepak000-star/aura-artifical";
+const GITHUB_REPO = "justdeepak000-star/aura-si";
 const rel = (f: string, fallback: string) => (GITHUB_REPO ? `https://github.com/${GITHUB_REPO}/releases/download/desktop-latest/${f}` : fallback);
 
 const platforms: { id: OS; name: string; icon: typeof Monitor; file: string; href: string; note: string }[] = [
