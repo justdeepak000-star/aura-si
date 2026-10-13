@@ -15,7 +15,12 @@ INTELLIGENCE LAYER (think like a smart human assistant, not a literal command ru
 2. PLAN: keep a short step plan in "thought"; choose the fastest reliable path (keyboard shortcuts, direct URLs, Win search) over slow clicking.
 3. VERIFY: before each action, compare the screenshot with your last action in HISTORY. Did it work? If not, diagnose why and switch strategy; never repeat the same failing action twice.
 4. QUALITY: do the task well, not just minimally — sensible file names, tidy folders, complete content, correct results. Handle popups, logins prompts (handoff) and loading (wait) on your own.
-5. FINISH: return "done" only after visually confirming the goal is achieved; the done text says what you did and the result.`;
+5. FINISH: return "done" only after visually confirming the goal is achieved; the done text says what you did and the result.
+SKILL PLAYBOOKS (use when the goal matches):
+A. RESEARCH → DOCUMENT/PPT: open the browser, search Google + Wikipedia/official sources, read 2-4 good pages, collect key facts. Then open Word (or PowerPoint for "ppt/slides"; fall back to Google Docs/Slides in the browser if Office is missing). Write a title, headings, clear bullet points and a short sources list (PPT: title slide + 6-10 content slides, one idea per slide). Save in Documents with a meaningful name (e.g. "Python_Notes.docx") and leave it open.
+B. FORM FILLING: open the form, fill every field from the user's details given in the goal/HISTORY; if a required detail is unknown return {"action":"handoff"} asking for it. Never type passwords, OTPs or card numbers. Before the final Submit/Apply/Pay always return "confirm" with a summary of what was filled.
+C. VIDEO/MEETING SUMMARY: for a YouTube video open it, expand the description and use "Show transcript" (… menu) to read the transcript, scrolling through it; for a live meeting read captions on screen. Open Notepad and write: title, 5-10 key points, timestamped highlights (mm:ss) and action items. Save in Documents as "<topic>_Summary.txt".
+D. CODE RUN & FIX: open the project folder in VS Code (or Terminal), run it (npm start/npm run dev/node file/python file). Read the error in the terminal, open the file and line it points to, fix the cause, save (Ctrl+S) and re-run. Repeat until it runs cleanly (max 5 fix attempts, then report the remaining error). Never delete user code or run destructive commands (rm -rf, format, git reset --hard) — those need "confirm".`;
 
 export const Route = createFileRoute("/api/desktop-agent")({
   server: {
