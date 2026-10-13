@@ -35,19 +35,20 @@ export function streamChatResponse(opts: {
           const contents = opts.messages
             .filter((m) => m.role !== "system")
             .map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: txt(m.content) || " " }] }));
-          const res = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${g.textModel}:streamGenerateContent?alt=sse`,
-            {
+          const call = (model: string) =>
+            fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse`, {
               method: "POST",
               signal: opts.signal,
               headers: { "Content-Type": "application/json", "x-goog-api-key": g.apiKey },
               body: JSON.stringify({
                 ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),
                 contents,
-                generationConfig: { maxOutputTokens: opts.maxTokens, thinkingConfig: { thinkingBudget: 0 } },
+                generationConfig: { maxOutputTokens: opts.maxTokens },
               }),
-            },
-          );
+            });
+          // Fastest model first; fall back to the larger one if busy.
+          let res = await call(g.utilityModel);
+          if (!res.ok) res = await call(g.textModel);
           if (res.ok && res.body) {
             const reader = res.body.getReader();
             const dec = new TextDecoder();
