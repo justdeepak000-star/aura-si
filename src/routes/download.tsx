@@ -1,10 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Monitor, Apple, Terminal, Download, Mic, Search, Code2, FileText, MousePointerClick, FolderOpen, Globe, ShieldCheck } from "lucide-react";
 
-import { TiltCard } from "@/components/TiltCard";
 
-const DownloadScene = lazy(() => import("@/components/DownloadScene"));
 
 export const Route = createFileRoute("/download")({
   head: () => ({
@@ -47,9 +45,9 @@ const tasks = [
 
 function DownloadPage() {
   const [os, setOs] = useState<OS>("windows");
-  const [mounted, setMounted] = useState(false);
+  
   useEffect(() => {
-    setMounted(true);
+    
     const ua = navigator.userAgent;
     if (/Mac/i.test(ua)) setOs("mac");
     else if (/Linux/i.test(ua) && !/Android/i.test(ua)) setOs("linux");
@@ -68,8 +66,8 @@ function DownloadPage() {
         </nav>
       </header>
 
-      <section className="relative h-[88vh] min-h-[560px] flex items-center justify-center">
-        <div className="absolute inset-0">{mounted && <Suspense fallback={null}><DownloadScene /></Suspense>}</div>
+      <section className="relative min-h-[70vh] flex items-center justify-center py-20">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent pointer-events-none" />
         <div className="relative z-10 text-center px-6 pointer-events-none">
           <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">AURA Desktop</p>
           <h1 className="text-4xl md:text-7xl font-semibold leading-tight">Your AI that<br />actually does the work.</h1>
@@ -87,14 +85,14 @@ function DownloadPage() {
         <h2 className="text-3xl font-semibold text-center mb-10">Available everywhere</h2>
         <div className="grid md:grid-cols-3 gap-5">
           {platforms.map((p) => (
-            <TiltCard key={p.id} className={`rounded-2xl border p-6 bg-card ${p.id === os ? "border-primary" : "border-border"}`}>
+            <div key={p.id} className={`rounded-2xl border p-6 bg-card ${p.id === os ? "border-primary" : "border-border"}`}>
               <p.icon className="h-8 w-8 mb-4" />
               <h3 className="text-xl font-semibold">{p.name}</h3>
               <p className="text-sm text-muted-foreground mt-1 mb-5">{p.note}</p>
               <a href={p.href} download className="relative inline-flex items-center gap-2 rounded-full border border-border px-5 py-2 text-sm hover:bg-accent">
                 <Download className="h-4 w-4" /> {p.file}
               </a>
-            </TiltCard>
+            </div>
           ))}
         </div>
         <p className="text-center text-xs text-muted-foreground mt-6">Download, open, click Install — everything AURA needs is built in. No Node.js, no pairing code: AURA connects to your laptop automatically.</p>
@@ -105,11 +103,11 @@ function DownloadPage() {
           <h2 className="text-3xl font-semibold mb-8">{s.title}</h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
             {s.items.map((f) => (
-              <TiltCard key={f.t} className="rounded-2xl border border-border bg-card p-5">
+              <div key={f.t} className="rounded-2xl border border-border bg-card p-5">
                 <f.icon className="h-6 w-6 mb-3 text-primary" />
                 <h3 className="font-semibold">{f.t}</h3>
                 <p className="text-sm text-muted-foreground mt-1">{f.d}</p>
-              </TiltCard>
+              </div>
             ))}
           </div>
         </section>
