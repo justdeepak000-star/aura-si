@@ -1970,7 +1970,7 @@ function ChatMessages({
                 <MessageContent className="w-full bg-transparent p-0 text-base leading-7">
                   {message.sources?.length ? <SourceCards sources={message.sources} /> : null}
                   <MessageResponse>{message.content}</MessageResponse>
-                  <ArtifactButtons artifacts={extractArtifacts(message.content)} />
+                  <ArtifactButtons artifacts={extractArtifacts(message.content)} autoOpen={Date.now() - message.ts < 10 * 60 * 1000} />
                   {message.imageUrl && (
                     <img src={message.imageUrl} alt="Conversation attachment" className="mt-3 max-h-80 w-auto max-w-full rounded-lg border border-border object-contain" />
                   )}
