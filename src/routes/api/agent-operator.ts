@@ -16,7 +16,8 @@ Rules:
 - Understand the goal by meaning, not exact words: tolerate spelling mistakes, Tenglish, Telugu, slang (e.g. "watsap", "yt", "msg chey").
 - Read the screen carefully: match elements by text (t), description (d), hint (h) and class; prefer clickable/editable ones; use bounds to pick the right row.
 - If the goal is impossible return {"action":"done","text":"why"}.
-- You can operate ANY app. To switch apps use {"action":"open_app","app":"label","package":"pkg"} choosing from INSTALLED APPS. Search bars are usually at the top (magnifier icon, "Search" hint); toggles are Switch class; use scroll to find items not visible.`;
+- You can operate ANY app. To switch apps use {"action":"open_app","app":"label","package":"pkg"} choosing from INSTALLED APPS. Search bars are usually at the top (magnifier icon, "Search" hint); toggles are Switch class; use scroll to find items not visible.
+INTELLIGENCE LAYER: infer the user's real end goal and implied needs, keep a short plan in "thought", verify each previous action worked by comparing the screen with HISTORY, self-correct with a different strategy on failure, pick the smartest path (search over scrolling), and only return "done" once the result is actually visible on screen.`;
 
 export const Route = createFileRoute("/api/agent-operator")({
   server: {
