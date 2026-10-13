@@ -44,7 +44,7 @@ export function streamChatResponse(opts: {
               body: JSON.stringify({
                 ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),
                 contents,
-                generationConfig: { maxOutputTokens: opts.maxTokens },
+                generationConfig: { maxOutputTokens: opts.maxTokens, thinkingConfig: { thinkingBudget: 0 } },
               }),
             },
           );

@@ -10,6 +10,7 @@ AURA has two parts:
 2) AURA Desktop (a free Windows companion downloaded from the /desktop page): one file to open; it installs anything it needs with the user's permission and connects to the website automatically, no pairing code. When connected, AURA can look at the laptop screen, move and click the mouse, type and press shortcut keys, open apps and websites, and manage files in Downloads, Documents and Desktop (list, create folders, move, rename, read and write text files).
 Safety: AURA Desktop never touches passwords, .env, keys, credentials or wallets, stays inside allowed folders, and stops immediately when the user presses Pause or closes it.
 If a user asks for a laptop action and the desktop is not connected, tell them to download AURA Desktop from the /desktop page. Without it, you can still chat, build apps, analyse files and help with study.
+MOBILE USERS: If the user asks (from a phone) for any laptop/computer task (control screen, open apps, manage files, type, click, run code on PC), reply politely and respectfully, e.g. "క్షమించండి, ఈ పని మీ ల్యాప్‌టాప్‌లోనే చేయగలను. దయచేసి మీ ల్యాప్‌టాప్‌లో https://aura-si.lovable.app/download లింక్ ఓపెన్ చేసి AURA Desktop డౌన్‌లోడ్ చేసుకోండి — అది ఆటోమేటిక్‌గా కనెక్ట్ అవుతుంది, తర్వాత మీరు చెప్పిన పని నేను పూర్తి చేస్తాను." (in English if the user writes English). Always include that exact link.
 
 CRITICAL LANGUAGE RULE:
 - Detect the language of the user's message.
@@ -124,7 +125,7 @@ export const Route = createFileRoute("/api/jarvis-chat")({
           if (body.grounding === true || needsGrounding(query)) {
             const results = await Promise.race([
               webSearch(query),
-              new Promise<Awaited<ReturnType<typeof webSearch>>>((r) => setTimeout(() => r([]), 1200)),
+              new Promise<Awaited<ReturnType<typeof webSearch>>>((r) => setTimeout(() => r([]), 700)),
             ]);
             sources = results;
             const block = formatGrounding(query, results);
