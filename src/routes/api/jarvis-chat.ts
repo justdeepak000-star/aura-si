@@ -122,7 +122,10 @@ export const Route = createFileRoute("/api/jarvis-chat")({
             "@/lib/websearch.server"
           );
           if (body.grounding === true || needsGrounding(query)) {
-            const results = await webSearch(query);
+            const results = await Promise.race([
+              webSearch(query),
+              new Promise<Awaited<ReturnType<typeof webSearch>>>((r) => setTimeout(() => r([]), 1200)),
+            ]);
             sources = results;
             const block = formatGrounding(query, results);
             if (block) sections.push(block + "\nCite facts inline with bracket numbers like [1], [2] matching the results.");
