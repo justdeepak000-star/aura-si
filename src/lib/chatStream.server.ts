@@ -23,7 +23,64 @@ export function streamChatResponse(opts: {
       let emitted = false;
       try {
         const { getProvider } = await import("@/lib/omniroute/providers.server");
-        const p = getProvider("openrouter");
+        const g = getProvider("gemini");
+        if (g) {
+          const txt = (c: unknown) =>
+            typeof c === "string"
+              ? c
+              : Array.isArray(c)
+                ? c.map((b: { text?: string }) => b?.text ?? "").join("")
+                : "";
+          const system = opts.messages.filter((m) => m.role === "system").map((m) => txt(m.content)).join("\n\n");
+          const contents = opts.messages
+            .filter((m) => m.role !== "system")
+            .map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: txt(m.content) || " " }] }));
+          const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${g.textModel}:streamGenerateContent?alt=sse`,
+            {
+              method: "POST",
+              signal: opts.signal,
+              headers: { "Content-Type": "application/json", "x-goog-api-key": g.apiKey },
+              body: JSON.stringify({
+                ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),
+                contents,
+                generationConfig: { maxOutputTokens: opts.maxTokens },
+              }),
+            },
+          );
+          if (res.ok && res.body) {
+            const reader = res.body.getReader();
+            const dec = new TextDecoder();
+            let buf = "";
+            for (;;) {
+              const { value, done } = await reader.read();
+              if (done) break;
+              buf += dec.decode(value, { stream: true });
+              const lines = buf.split("\n");
+              buf = lines.pop() ?? "";
+              for (const line of lines) {
+                const t = line.trim();
+                if (!t.startsWith("data:")) continue;
+                try {
+                  const j = JSON.parse(t.slice(5)) as {
+                    candidates?: Array<{ content?: { parts?: Array<{ text?: string; thought?: boolean }> } }>;
+                  };
+                  const text = (j.candidates?.[0]?.content?.parts ?? [])
+                    .filter((p) => !p.thought)
+                    .map((p) => p.text ?? "")
+                    .join("");
+                  if (text) {
+                    emitted = true;
+                    send({ type: "delta", text });
+                  }
+                } catch {
+                  /* partial line */
+                }
+              }
+            }
+          }
+        }
+        const p = emitted ? null : getProvider("openrouter");
         if (p) {
           const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
