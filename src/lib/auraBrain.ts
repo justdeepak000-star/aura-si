@@ -7,12 +7,32 @@ function istNow() {
   return new Date(Date.now() + 5.5 * 3600 * 1000);
 }
 
-function safeMath(expr: string): number | null {
-  const e = expr.replace(/\s+/g, "").replace(/x|×/gi, "*").replace(/÷/g, "/").replace(/\^/g, "**");
-  if (!/^[\d+\-*/().%]+$/.test(e.replace(/\*\*/g, "*")) || !/\d/.test(e) || !/[+\-*/%]/.test(e)) return null;
+export function safeMath(expr: string): number | null {
+  const e = expr.replace(/\s+/g, "").replace(/x|×/gi, "*").replace(/÷/g, "/");
+  if (!/^[\d+\-*/().%^]+$/.test(e) || !/\d/.test(e) || !/\d[+\-*/%^]/.test(e)) return null;
+  let i = 0;
+  const num = (): number => {
+    if (e[i] === "(") { i++; const v = add(); if (e[i++] !== ")") throw 0; return v; }
+    if (e[i] === "-") { i++; return -pow(); }
+    const m = e.slice(i).match(/^\d+(\.\d+)?/);
+    if (!m) throw 0;
+    i += m[0].length;
+    return +m[0];
+  };
+  const pow = (): number => { const b = num(); if (e[i] === "^") { i++; return b ** pow(); } return b; };
+  const mul = (): number => {
+    let v = pow();
+    while ("*/%".includes(e[i] ?? "x")) { const o = e[i++]; const r = pow(); v = o === "*" ? v * r : o === "/" ? v / r : v % r; }
+    return v;
+  };
+  const add = (): number => {
+    let v = mul();
+    while (e[i] === "+" || e[i] === "-") { const o = e[i++]; const r = mul(); v = o === "+" ? v + r : v - r; }
+    return v;
+  };
   try {
-    const v = Function(`"use strict";return (${e})`)();
-    return typeof v === "number" && Number.isFinite(v) ? Math.round(v * 1e10) / 1e10 : null;
+    const v = add();
+    return i === e.length && Number.isFinite(v) ? Math.round(v * 1e10) / 1e10 : null;
   } catch {
     return null;
   }
