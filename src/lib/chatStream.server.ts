@@ -31,10 +31,11 @@ export function streamChatResponse(opts: {
               : Array.isArray(c)
                 ? c.map((b: { text?: string }) => b?.text ?? "").join("")
                 : "";
-          const system = opts.messages.filter((m) => m.role === "system").map((m) => txt(m.content)).join("\n\n");
+          const { shield, SHIELD_NOTE } = await import("@/lib/auraShield.server");
+          const system = [...opts.messages.filter((m) => m.role === "system").map((m) => txt(m.content)), SHIELD_NOTE].join("\n\n");
           const contents = opts.messages
             .filter((m) => m.role !== "system")
-            .map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: txt(m.content) || " " }] }));
+            .map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: shield(txt(m.content)) || " " }] }));
           const call = (model: string) =>
             fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse`, {
               method: "POST",
