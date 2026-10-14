@@ -117,6 +117,19 @@ export const Route = createFileRoute("/api/jarvis-chat")({
 
         // ── Web-search grounding ──────────────────────────────────────────
         const query = lastUserText(history).trim();
+
+        // AURA Local Brain: instant private answers, no provider call.
+        if (!hasImage && !body.auraModel?.includes("Ultra")) {
+          const { localAnswer } = await import("@/lib/auraBrain");
+          const local = localAnswer(query);
+          if (local) {
+            if (body.stream && !body.voice) {
+              const out = JSON.stringify({ type: "delta", text: local }) + "\n" + JSON.stringify({ type: "done" }) + "\n";
+              return new Response(out, { headers: { "Content-Type": "application/x-ndjson" } });
+            }
+            return Response.json({ reply: local, provider: "aura-local", model: "aura-brain" });
+          }
+        }
         let sources: Array<{ title: string; snippet: string; url: string }> = [];
         if (!hasImage && query && body.grounding !== false) {
           const { needsGrounding, webSearch, formatGrounding } = await import(
