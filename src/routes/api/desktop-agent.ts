@@ -33,34 +33,28 @@ export const Route = createFileRoute("/api/desktop-agent")({
           const { goal, history, image, width, height, folders } = (await request.json()) as {
             goal?: string; history?: string[]; image?: string; width?: number; height?: number; folders?: string[];
           };
-          const text = `GOAL: ${String(goal ?? "").slice(0, 800)}
+          const { shield, SHIELD_NOTE } = await import("@/lib/auraShield.server");
+          const text = `GOAL: ${shield(String(goal ?? "").slice(0, 800))}
 ALLOWED FOLDERS: ${(folders ?? []).join("; ")}
-HISTORY:\n${(history ?? []).slice(-15).map((h, k) => `${k + 1}. ${String(h).slice(0, 600)}`).join("\n") || "(none)"}
+HISTORY:\n${(history ?? []).slice(-15).map((h, k) => `${k + 1}. ${shield(String(h).slice(0, 600))}`).join("\n") || "(none)"}
 SCREENSHOT: ${width}x${height}`;
-          const r = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
-            method: "POST",
-            headers: { "Lovable-API-Key": String(process.env.LOVABLE_API_KEY), "Content-Type": "application/json", "X-Lovable-AIG-SDK": "fetch" },
-            body: JSON.stringify({
-              model: "openai/gpt-6-astra",
-              stream: true,
-              store: false,
-              reasoning: { effort: "medium" },
-              instructions: SYSTEM,
-              input: [{ role: "user", content: [{ type: "input_text", text }, ...(image ? [{ type: "input_image", image_url: `data:image/jpeg;base64,${image}` }] : [])] }],
-            }),
-          });
-          if (!r.ok || !r.body) return json({ action: "done", text: r.status === 429 ? "AI busy, కొంచెం సేపు తర్వాత try చేయండి." : r.status === 402 ? "AI credits అయిపోయాయి." : "Planner error" });
-          let out = "", buf = "";
-          const reader = r.body.getReader(); const dec = new TextDecoder();
-          for (;;) {
-            const { done, value } = await reader.read(); if (done) break;
-            buf += dec.decode(value, { stream: true });
-            const lines = buf.split("\n"); buf = lines.pop() ?? "";
-            for (const l of lines) {
-              if (!l.startsWith("data:")) continue;
-              try { const e = JSON.parse(l.slice(5)); if (e.type === "response.output_text.delta") out += e.delta; } catch {}
-            }
-          }
+          const key = process.env.GEMINI_API_KEY;
+          if (!key) return json({ action: "done", text: "Gemini key missing." });
+          const call = (model: string) =>
+            fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+              body: JSON.stringify({
+                systemInstruction: { parts: [{ text: SYSTEM + "\n" + SHIELD_NOTE }] },
+                contents: [{ role: "user", parts: [{ text }, ...(image ? [{ inlineData: { mimeType: "image/jpeg", data: image } }] : [])] }],
+                generationConfig: { responseMimeType: "application/json", maxOutputTokens: 1024 },
+              }),
+            });
+          let r = await call("gemini-flash-latest");
+          if (!r.ok) r = await call("gemini-flash-lite-latest");
+          if (!r.ok) return json({ action: "done", text: r.status === 429 ? "AI busy, కొంచెం సేపు తర్వాత try చేయండి." : "Planner error" });
+          const d = (await r.json()) as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
+          const out = (d.candidates?.[0]?.content?.parts ?? []).map((p) => p.text ?? "").join("");
           const m = out.match(/\{[\s\S]*\}/);
           return json(m ? JSON.parse(m[0]) : { action: "wait" });
         } catch {
