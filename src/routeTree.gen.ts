@@ -18,6 +18,7 @@ import { Route as ApiAgentOperatorRouteImport } from './routes/api/agent-operato
 import { Route as ApiAgentPlanRouteImport } from './routes/api/agent-plan'
 import { Route as ApiAiHealthRouteImport } from './routes/api/ai-health'
 import { Route as ApiAuthOtpRouteImport } from './routes/api/auth-otp'
+import { Route as ApiBrainStatusRouteImport } from './routes/api/brain-status'
 import { Route as ApiChatTitleRouteImport } from './routes/api/chat-title'
 import { Route as ApiDesktopAgentRouteImport } from './routes/api/desktop-agent'
 import { Route as ApiGenerateImageRouteImport } from './routes/api/generate-image'
@@ -71,6 +72,11 @@ const ApiAuthOtpRoute = ApiAuthOtpRouteImport.update({
   path: '/api/auth-otp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiBrainStatusRoute = ApiBrainStatusRouteImport.update({
+  id: '/api/brain-status',
+  path: '/api/brain-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiChatTitleRoute = ApiChatTitleRouteImport.update({
   id: '/api/chat-title',
   path: '/api/chat-title',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/api/agent-plan': typeof ApiAgentPlanRoute
   '/api/ai-health': typeof ApiAiHealthRoute
   '/api/auth-otp': typeof ApiAuthOtpRoute
+  '/api/brain-status': typeof ApiBrainStatusRoute
   '/api/chat-title': typeof ApiChatTitleRoute
   '/api/desktop-agent': typeof ApiDesktopAgentRoute
   '/api/generate-image': typeof ApiGenerateImageRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/api/agent-plan': typeof ApiAgentPlanRoute
   '/api/ai-health': typeof ApiAiHealthRoute
   '/api/auth-otp': typeof ApiAuthOtpRoute
+  '/api/brain-status': typeof ApiBrainStatusRoute
   '/api/chat-title': typeof ApiChatTitleRoute
   '/api/desktop-agent': typeof ApiDesktopAgentRoute
   '/api/generate-image': typeof ApiGenerateImageRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/api/agent-plan': typeof ApiAgentPlanRoute
   '/api/ai-health': typeof ApiAiHealthRoute
   '/api/auth-otp': typeof ApiAuthOtpRoute
+  '/api/brain-status': typeof ApiBrainStatusRoute
   '/api/chat-title': typeof ApiChatTitleRoute
   '/api/desktop-agent': typeof ApiDesktopAgentRoute
   '/api/generate-image': typeof ApiGenerateImageRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/api/agent-plan'
     | '/api/ai-health'
     | '/api/auth-otp'
+    | '/api/brain-status'
     | '/api/chat-title'
     | '/api/desktop-agent'
     | '/api/generate-image'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/api/agent-plan'
     | '/api/ai-health'
     | '/api/auth-otp'
+    | '/api/brain-status'
     | '/api/chat-title'
     | '/api/desktop-agent'
     | '/api/generate-image'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/api/agent-plan'
     | '/api/ai-health'
     | '/api/auth-otp'
+    | '/api/brain-status'
     | '/api/chat-title'
     | '/api/desktop-agent'
     | '/api/generate-image'
@@ -229,6 +241,7 @@ export interface RootRouteChildren {
   ApiAgentPlanRoute: typeof ApiAgentPlanRoute
   ApiAiHealthRoute: typeof ApiAiHealthRoute
   ApiAuthOtpRoute: typeof ApiAuthOtpRoute
+  ApiBrainStatusRoute: typeof ApiBrainStatusRoute
   ApiChatTitleRoute: typeof ApiChatTitleRoute
   ApiDesktopAgentRoute: typeof ApiDesktopAgentRoute
   ApiGenerateImageRoute: typeof ApiGenerateImageRoute
@@ -303,6 +316,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthOtpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/brain-status': {
+      id: '/api/brain-status'
+      path: '/api/brain-status'
+      fullPath: '/api/brain-status'
+      preLoaderRoute: typeof ApiBrainStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chat-title': {
       id: '/api/chat-title'
       path: '/api/chat-title'
@@ -365,6 +385,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAgentPlanRoute: ApiAgentPlanRoute,
   ApiAiHealthRoute: ApiAiHealthRoute,
   ApiAuthOtpRoute: ApiAuthOtpRoute,
+  ApiBrainStatusRoute: ApiBrainStatusRoute,
   ApiChatTitleRoute: ApiChatTitleRoute,
   ApiDesktopAgentRoute: ApiDesktopAgentRoute,
   ApiGenerateImageRoute: ApiGenerateImageRoute,
