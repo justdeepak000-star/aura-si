@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BrainStatus } from "@/components/BrainStatus";
 import {
   Sheet,
   SheetContent,
@@ -197,7 +198,9 @@ export function JarvisProfileSheet({
                 </a>
               </div>
             ) : (
-              groups.map((rows, gi) => (
+              <>
+              <BrainStatus />
+              {groups.map((rows, gi) => (
                 <div key={gi} className="mb-2 space-y-2">
                   {rows.map(({ label, Icon, run, hint, danger }) => (
                     <button
@@ -232,7 +235,8 @@ export function JarvisProfileSheet({
                     </button>
                   ))}
                 </div>
-              ))
+              ))}
+              </>
             )}
           </div>
         </div>
