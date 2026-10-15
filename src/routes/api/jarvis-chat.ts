@@ -171,8 +171,10 @@ export const Route = createFileRoute("/api/jarvis-chat")({
           if (!data) return Response.json({ error: "Subscription required." }, { status: 403 });
         }
 
-        // AURA Ultra & AURA Flash → Deepak's own GPU brain only.
-        if (paidPlan) {
+        // AURA Ultra & AURA Flash → Deepak's GPU brain, except Telugu/Tanglish → Gemini.
+        const { isTeluguOrTanglish } = await import("@/lib/teluguDetect");
+        const teluguToGemini = !!paidPlan && isTeluguOrTanglish(lastUserText(history));
+        if (paidPlan && !teluguToGemini) {
           const { auraGpuBrainChat } = await import("@/lib/auraGpuBrain.server");
           try {
             const reply = await auraGpuBrainChat(fullMessages, request.signal);
@@ -187,7 +189,7 @@ export const Route = createFileRoute("/api/jarvis-chat")({
           }
         }
 
-        if (body.auraModel === "AURA Ultra") {
+        if (body.auraModel === "AURA Ultra" && !teluguToGemini) {
           const { auraGatewayChat, AuraGatewayError } = await import("@/lib/auraGateway.server");
           try {
             const result = await auraGatewayChat(fullMessages);
