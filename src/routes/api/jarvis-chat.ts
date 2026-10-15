@@ -171,7 +171,22 @@ export const Route = createFileRoute("/api/jarvis-chat")({
           if (!data) return Response.json({ error: "Subscription required." }, { status: 403 });
         }
 
-        // AURA Ultra (Paid Model 1) → AURA Intelligence Gateway.
+        // AURA Ultra & AURA Flash → Deepak's own GPU brain only.
+        if (paidPlan) {
+          const { auraGpuBrainChat } = await import("@/lib/auraGpuBrain.server");
+          try {
+            const reply = await auraGpuBrainChat(fullMessages, request.signal);
+            if (body.stream && !body.voice) {
+              const out = JSON.stringify({ type: "delta", text: reply }) + "\n" + JSON.stringify({ type: "done" }) + "\n";
+              return new Response(out, { headers: { "Content-Type": "application/x-ndjson" } });
+            }
+            return Response.json({ reply, provider: "aura-gpu-brain", model: "qwen2.5-3b-instruct-aura" });
+          } catch (err) {
+            const message = err instanceof Error ? err.message : "AURA Brain unavailable";
+            return Response.json({ error: `${message}. Please try again shortly.` }, { status: 503 });
+          }
+        }
+
         if (body.auraModel === "AURA Ultra") {
           const { auraGatewayChat, AuraGatewayError } = await import("@/lib/auraGateway.server");
           try {
